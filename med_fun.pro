@@ -16,7 +16,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    functions.cpp
+    functions.cpp\
 
 HEADERS += \
     functions.h
