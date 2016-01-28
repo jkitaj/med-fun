@@ -1,0 +1,4 @@
+Liczba minimalnych zaleznosci funkcyjnych 1
+Identyfikatory minimalnych zaleznosci funkcyjnych 
+0 1 2 3 4 5
+czas 34000ms  	

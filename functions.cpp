@@ -147,7 +147,7 @@ void FunGen(vector <Candidate*> Ck,int k, vector <Candidate*> &output, vector <i
 
 }
 
-/*void StrippedFunGen(vector <Candidate*> Ck,int k, vector <Candidate*> &output, vector <int*> T, int N)
+void StrippedFunGen(vector <Candidate*> Ck,int k, vector <Candidate*> &output, vector <int> T, int N)
 {
     for(unsigned int i=0;i<Ck.size();i++)
         for(unsigned int j=i+1;j<Ck.size();j++){
@@ -180,7 +180,7 @@ void FunGen(vector <Candidate*> Ck,int k, vector <Candidate*> &output, vector <i
                         ok_to_merge=false;
                         break;
                     }
-                }
+                }*/
 
             }
             if(ok_to_merge){
@@ -218,6 +218,20 @@ void FunGen(vector <Candidate*> Ck,int k, vector <Candidate*> &output, vector <i
                         output.erase(output.end()-1);//usun kandydata
                         break;
                     }
+                    /*else{
+                        cout<<output.back()->GroupsNo<<"\t"<<output.back()->groups.size()<<endl;
+                        for(unsigned int z=0;z<output.back()->groups.size(); z++){//atrybut 0 wszystkie grupy
+                                     cout<<"Grupa "<<z<<endl;
+                                     for(unsigned int a=0;a<output.back()->groups.at(z)->size(); a++){//wszystkie elementy z grupy
+                                         //int *b=C1.at(5)->groups.at(z)->at(a);
+                                         //cout<<*b<<"\t";
+                                         cout<<*(output.back()->groups.at(z)->at(a))<<"\t";
+
+                                     }
+                                     cout<<endl;
+                        }
+
+                    }*/
                 }
 
 
@@ -226,18 +240,29 @@ void FunGen(vector <Candidate*> Ck,int k, vector <Candidate*> &output, vector <i
 
         }
 
-}*/
+}
 
 
-void Basic_algorythm(vector <Candidate*> C1,int id_row, vector <Candidate*> &Rk)
+
+void Basic_algorythm(vector <Candidate*> C1,int id_row, vector <Candidate*> &Rk, int d_column)
 {
     vector <int> T;
     T.resize(id_row);
     vector <int> delta;
     delta.resize(id_row);
+    cout<<C1.size()<<endl;
     for(unsigned int z=0;z<C1.size(); z++)//dodaj GroupsNo
         C1.at(z)->GroupsNo=C1.at(z)->groups.size();
-    PartitionArrayRepresentation(C1.back()->groups,delta);
+    PartitionArrayRepresentation(C1.at(d_column-1)->groups,delta);
+    for(unsigned int z=0;z<C1.at(d_column-1)->groups.size(); z++){//atrybut ostatni(decyzja) wszystkie grupy -usuwanie
+        for(unsigned int a=0;a<C1.at(d_column-1)->groups.at(z)->size(); a++){//wszystkie elementy z grupy
+            delete C1.at(d_column-1)->groups.at(z)->at(a);
+        }
+        delete C1.at(d_column-1)->groups.at(z);
+    }
+    delete C1.at(d_column-1);
+    C1.erase(C1.begin()+d_column-1);
+    /*PartitionArrayRepresentation(C1.back()->groups,delta);
     for(unsigned int z=0;z<C1.back()->groups.size(); z++){//atrybut ostatni(decyzja) wszystkie grupy -usuwanie
         for(unsigned int a=0;a<C1.back()->groups.at(z)->size(); a++){//wszystkie elementy z grupy
             delete C1.back()->groups.at(z)->at(a);
@@ -245,36 +270,37 @@ void Basic_algorythm(vector <Candidate*> C1,int id_row, vector <Candidate*> &Rk)
         delete C1.back()->groups.at(z);
     }
     delete C1.back();
-    C1.erase(C1.end()-1);
+    C1.erase(C1.end()-1);*/
     vector <Candidate*> tmp;
     tmp=C1;
-
     for(int k=1;tmp.size()>0;k++){
+        cout<<"Weryfikacja kandydatow o dlugosci: "<<k<<endl;
         for(int z=0;z<tmp.size();z++)
             if(Holds(delta,tmp.at(z)->groups)){
                 Rk.push_back(tmp.at(z));
                 tmp.erase(tmp.begin()+z);
                 z--;
             }
+        cout<<"Generowanie kandydatow o dlugosci: "<<k+1<<endl;
         vector <Candidate*> tmp2;
         FunGen(tmp,k,tmp2,T,id_row);
         tmp=tmp2;
 
     }
 
-
     cout<<"Liczba minimalnych zaleznosci funkcyjnych "<<Rk.size()<<endl;
     cout<<"Identyfikatory minimalnych zaleznosci funkcyjnych "<<endl;
     for(unsigned int i=0;i<Rk.size();i++){
-        for(unsigned int j=0;j<Rk.at(i)->Cand_id.size();j++)
-            cout<<Rk.at(i)->Cand_id.at(j);
+        for(unsigned int j=0;j<Rk.at(i)->Cand_id.size();j++){
+            cout<<Rk.at(i)->Cand_id.at(j)<<" ";
+        }
         cout<<"\t";
     }
     cout<<endl<<"Koniec programu"<<endl;
 }
 
 
-void Stripped_algorythm(vector <Candidate*> C1,int id_row, vector <Candidate*> &Rk)
+void Stripped_algorythm(vector <Candidate*> C1,int id_row, vector <Candidate*> &Rk, int d_column)
 {
     vector <int> T;
     T.resize(id_row);
@@ -284,7 +310,7 @@ void Stripped_algorythm(vector <Candidate*> C1,int id_row, vector <Candidate*> &
         C1.at(z)->GroupsNo=C1.at(z)->groups.size();
     cout<<"bla"<<endl;
     for(unsigned int z=0;z<C1.size(); z++)//dla kazdego atrybutu
-        for(unsigned int a=0;a<C1.at(z)->groups.size(); a++)//przystrzyz grupy
+        for(int a=0;a<C1.at(z)->groups.size(); a++)//przystrzyz grupy
             if(C1.at(z)->groups.at(a)->size()==1)
             {
                 delete C1.at(z)->groups.at(a)->at(0);
@@ -294,51 +320,48 @@ void Stripped_algorythm(vector <Candidate*> C1,int id_row, vector <Candidate*> &
             }
 
     cout<<"bla"<<endl;
-    StrippedPartitionArrayRepresentation(C1.back()->groups,delta);
-    if(StrippedHolds(delta,C1.back()->groups))
+    StrippedPartitionArrayRepresentation(C1.at(d_column-1)->groups,delta);
+    if(StrippedHolds(delta,C1.at(d_column-1)->groups))
         cout<<"tak"<<endl;
     else
             cout<<"nie"<<endl;
-    for(unsigned int z=0;z<C1.back()->groups.size(); z++){//atrybut ostatni(decyzja) wszystkie grupy -usuwanie
-        for(unsigned int a=0;a<C1.back()->groups.at(z)->size(); a++){//wszystkie elementy z grupy
-            delete C1.back()->groups.at(z)->at(a);
+
+    for(unsigned int z=0;z<C1.at(d_column-1)->groups.size(); z++){//atrybut ostatni(decyzja) wszystkie grupy -usuwanie
+        for(unsigned int a=0;a<C1.at(d_column-1)->groups.at(z)->size(); a++){//wszystkie elementy z grupy
+            delete C1.at(d_column-1)->groups.at(z)->at(a);
         }
-        delete C1.back()->groups.at(z);
+        delete C1.at(d_column-1)->groups.at(z);
     }
-    delete C1.back();
-    if(StrippedHolds(delta,C1.at(5)->groups))
-        cout<<"tak"<<endl;
-    else
-            cout<<"nie"<<endl;
-    C1.erase(C1.end()-1);
+    delete C1.at(d_column-1);
+    C1.erase(C1.begin()+d_column-1);
     vector <Candidate*> tmp;
     tmp=C1;
 
     for(int k=1;tmp.size()>0;k++){
+        cout<<"Weryfikacja kandydatow o dlugosci: "<<k<<endl;
         for(int z=0;z<tmp.size();z++)
             if(StrippedHolds(delta,tmp.at(z)->groups)){
                 Rk.push_back(tmp.at(z));
                 tmp.erase(tmp.begin()+z);
                 z--;
             }
-
+        cout<<"Generowanie kandydatow o dlugosci: "<<k+1<<endl;
         vector <Candidate*> tmp2;
-        FunGen(tmp,k,tmp2,T,id_row);
+        StrippedFunGen(tmp,k,tmp2,T,id_row);
         tmp=tmp2;
 
     }
 
-
     cout<<"Liczba minimalnych zaleznosci funkcyjnych "<<Rk.size()<<endl;
     cout<<"Identyfikatory minimalnych zaleznosci funkcyjnych "<<endl;
     for(unsigned int i=0;i<Rk.size();i++){
-        for(unsigned int j=0;j<Rk.at(i)->Cand_id.size();j++)
-            cout<<Rk.at(i)->Cand_id.at(j);
+        for(unsigned int j=0;j<Rk.at(i)->Cand_id.size();j++){
+            cout<<Rk.at(i)->Cand_id.at(j)<<" ";
+        }
         cout<<"\t";
     }
     cout<<endl<<"Koniec programu"<<endl;
 }
-
 
 bool StrippedHolds(vector<int> T, vector<vector<int *> *> C)
 {
@@ -392,10 +415,10 @@ void StrippedProduct(vector<vector<int *> *> A, vector<vector<int *> *> B, int B
         }
         set<int>::iterator it;
         for (it=AGroupIds.begin(); it!=AGroupIds.end(); ++it){
-            C.push_back(new vector <int*> ());
-            for(unsigned int x=0;x<S.at(*it).size(); x++){//insertowanie S[j] do C
-                if(S.at(*it).size()>1)
-                C.back()->push_back(new int (S.at(*it).at(x)));
+            if(S.at(*it).size()>1){//utworz grupy tylko niesingletonowe
+                C.push_back(new vector <int*> ());
+                for(unsigned int x=0;x<S.at(*it).size(); x++)//insertowanie S[j] do C
+                    C.back()->push_back(new int (S.at(*it).at(x)));
             }
             GroupsNo++;
 
@@ -410,7 +433,7 @@ void StrippedProduct(vector<vector<int *> *> A, vector<vector<int *> *> B, int B
 }
 
 
-/*void SuperFunGen(vector<int> T, vector<Candidate *> Ck)
+void SuperFunGen(vector <Candidate*> Ck,int k, vector <Candidate*> &output, vector <int> T, int N)
 {
     for(unsigned int i=0;i<Ck.size();i++)
         for(unsigned int j=i+1;j<Ck.size();j++){
@@ -475,7 +498,7 @@ void StrippedProduct(vector<vector<int *> *> A, vector<vector<int *> *> B, int B
 
         }
 
-}*/
+}
 
 
 void InitializeParenthood(Candidate *A,Candidate *B)
@@ -484,9 +507,10 @@ void InitializeParenthood(Candidate *A,Candidate *B)
 }
 
 
-int read_from_modified_file(string filename, vector<Candidate *> &C1)
+int read_from_modified_file(string filename, vector<Candidate *> &C1, int number_of_transactions)
 {
     ifstream infile(filename.c_str());
+    ofstream outfile("output.txt");
     vector <vector <dictionary> > dict;
       string s;
       int id_row=0;//ktory wiersz(transakcja) w pliku
@@ -522,10 +546,12 @@ int read_from_modified_file(string filename, vector<Candidate *> &C1)
             //int *id =new int(id_row);
             //id=id_row;
             C1.at(column_number)->groups.at(0)->push_back(new int(id_row));
+            outfile<<"0 ";
             //int *a=C1.at(column_number)->groups.at(0)->at(0);
             //cout<<*a<<"\t"<<a<<endl;
             column_number++;
           }
+          outfile<<"\n";
       }
       /*for(unsigned int z=0;z<dict.size(); z++){
           for(unsigned int a=0;a<dict.at(z).size(); a++){
@@ -536,8 +562,8 @@ int read_from_modified_file(string filename, vector<Candidate *> &C1)
       }*/
 
 
-
-      while (infile)
+      int transaction_counter=2;
+      while (infile && transaction_counter<=number_of_transactions)
     {
       id_row++;
       string s;
@@ -553,6 +579,7 @@ int read_from_modified_file(string filename, vector<Candidate *> &C1)
             if(s==dict.at(column_number).at(z).word){//jezeli jest juz w slowniku, to dodaj do grupy o id ze slownika element(id_wiersza)
                 is_in_dict=true;
                 C1.at(column_number)->groups.at(dict.at(column_number).at(z).id)->push_back(new int (id_row));
+                outfile<<dict.at(column_number).at(z).id<<" ";
                 break;
             }
 
@@ -562,14 +589,18 @@ int read_from_modified_file(string filename, vector<Candidate *> &C1)
             dict.at(column_number).push_back(dictionary(s,dict_id));
             C1.at(column_number)->groups.push_back(new vector <int*> ());
             C1.at(column_number)->groups.at(dict.at(column_number).at(dict_id).id)->push_back(new int (id_row));
+            outfile<<dict.at(column_number).at(dict_id).id<<" ";
         }
 
 
         column_number++;
       }
+      outfile<<"\n";
+      transaction_counter++;
 
 
     }
+    outfile.close();
     infile.close();
     /*for(unsigned int z=0;z<dict.size(); z++){
         for(unsigned int a=0;a<dict.at(z).size(); a++){
@@ -598,6 +629,52 @@ void create_modified_file(string filename, int decision_column, int decision_typ
 }
 
 
-void save_to_outputfile(vector<Candidate *> Rk)
+void save_to_outputfile(vector <Candidate*> Rk,int a_type, int number_of_transactions, double dif1, double dif2,string input_file)
 {
+    string filename="results";
+    string a_name;
+    ostringstream temp_records;
+    temp_records<<number_of_transactions;
+    string records=temp_records.str();
+    for(unsigned int i=0;i<input_file.size();i++){
+        if(input_file[i]=='.'){
+            filename.append("_");
+            filename.append(input_file.begin(),input_file.begin()+i);
+            filename.append("_");
+        }
+    }
+    filename.append(records);
+    filename.append("_");
+    switch(a_type)
+                   {
+
+                   case 3:
+                        a_name="SuperFun";
+                        break;//tu bedzie super_fun
+
+                   case 2:
+                        a_name="Stripped";
+                        break;
+                   case 1:
+                        a_name="Basic";
+                        break;
+                   default:
+                        a_name="Error";;
+                        break;
+                   }
+    filename.append(a_name);
+    filename.append(".txt");
+    ofstream output(filename.c_str());
+    output<<"Liczba minimalnych zaleznosci funkcyjnych "<<Rk.size()<<endl;
+    output<<"Identyfikatory minimalnych zaleznosci funkcyjnych "<<endl;
+    for(unsigned int i=0;i<Rk.size();i++){
+        for(unsigned int j=0;j<Rk.at(i)->Cand_id.size();j++){
+            output<<Rk.at(i)->Cand_id.at(j)<<" ";
+        }
+        output<<"\t";
+    }
+    output<<endl;
+    output<<"Czas przetwarzania pliku: "<<dif1<<endl;
+    output<<"Czas wykonywania algorytmu: "<<dif2<<endl;
+    output.close();
 }
