@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 
     int d_column=1;//number of column where decision is
     int d_type;// id of decision type
-    int a_type=2;// id of algorythm type
+    int a_type=3;// id of algorythm type
     int number_of_transactions=10;
     string input_file="letters.data";
     string output_file;
@@ -44,8 +44,8 @@ int main(int argc, char *argv[])
                    {
 
                    case 3:
-                        Basic_algorythm(C1,id_row+1,Rk,d_column);
-                        break;//tu bedzie super_fun
+                        Super_Fun_algorythm(C1,id_row+1,Rk,d_column);
+                        break;
 
                    case 2:
                         Stripped_algorythm(C1,id_row+1,Rk,d_column);
@@ -61,14 +61,13 @@ int main(int argc, char *argv[])
 
 
 
-    //TODO
+
     end=clock();
     double dif2=(end - start) / (double)(CLOCKS_PER_SEC / 1000);
     save_to_outputfile(Rk,a_type,number_of_transactions,dif1,dif2,input_file);
 
 
 
-    //dif=difftime(end,start);
 
 
     cout<<"Czas wykonania algorytmu "<<dif2<<endl;
