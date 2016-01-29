@@ -9,10 +9,11 @@
 #include <string>
 #include "functions.h"
 
-void create_modified_file(string filename, int decision_column, int decision_type);
-int read_from_modified_file(string filename, vector <Candidate*> &C1, int number_of_transactions);
-void save_to_outputfile(vector <Candidate*> Rk);
-void prepare_output_file(ofstream *outputFile);
-void write_time_to_file(ofstream *outputFile, string str, double time);
+void create_modified_file(ifstream *input_file, int decision_column, int decision_type, string output_file_name, int number_of_transactions);
+
+int read_from_modified_file(string filename, vector<Candidate *> &C1, int number_of_transactions);
+
+void save_to_outputfile(vector<Candidate *> Rk, int a_type, int number_of_transactions,
+                        string input_file, double diffFilePrepare, double diffAlg, double diffAll);
 
 #endif //MED_PROJEKT_FILEUTILS_H
