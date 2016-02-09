@@ -21,9 +21,29 @@ int main(int argc, char *argv[]) {
 
     string inputFileName;
     ifstream inputFile;
+    cout << "Podaj nazwę pliku z danymi:" << endl;
+    cin >> inputFileName;
+    inputFile.open(inputFileName);
+    if (!inputFile.is_open()) {
+        cout << "Nie prawidłowa nazwa pliku (plik nie istnieje) lub wystąpił inny błąd." << endl;
+        cout << "Podaj jeszcze raz nazwę pliku z danymi:" << endl;
+        cin >> inputFileName;
+        inputFile.open(inputFileName);
+        if (!inputFile.is_open()) {
+            cout <<
+            "Nie prawidłowa nazwa pliku (plik nie istnieje) - sprawdź czy plik jest w tym samym folderze co plik wykonywalny programu." <<
+            endl;
+            return endProgram();
+        }
+    }
 
     if (!Menu(&d_column, &d_type, &a_type, &inputFile, inputFileName, &number_of_transactions))
         return endProgram();
+
+
+    cout << "Wybrane parametry: numer kolumny z atrybutem decyzyjnym - " <<
+    d_column << " , rodzaj decyzji - " << d_type << " , rodzaj algorytmu - " << a_type <<
+    " , liczba transkacji do wczytania - " << number_of_transactions << endl;
 
     startFilePrepare = clock();
     string modifiedFile;
@@ -33,24 +53,27 @@ int main(int argc, char *argv[]) {
     cout << "Koniec przetwarzania pliku - czas trwania operacji: " << diffFilePrepare << endl;
 
     vector<Candidate *> C1;//wektor do trzymania kandydatów o dlugosci 1
-    int id_row = read_from_modified_file(modifiedFile, C1, number_of_transactions);
+    int id_row = read_from_modified_file(inputFileName, C1, number_of_transactions);
     cout << "Liczba rekordów: " << id_row + 1 << endl;
     vector<Candidate *> Rk;
 
     switch (a_type) {
         case 1:
             startAlg = clock();
-            Basic_algorythm(C1, id_row + 1, Rk, d_column-1);
+            cout<<"Wykonywanie algorytmu FUN w wersji podstawowej..."<<endl;
+            Basic_algorythm(C1, id_row + 1, Rk, d_column);
             endAlg = clock();
             break;
         case 2:
             startAlg = clock();
-            Stripped_algorythm(C1, id_row + 1, Rk, d_column-1);
+            cout<<"Wykonywanie algorytmu FUN w wersji przystrzyżonej..."<<endl;
+            Stripped_algorythm(C1, id_row + 1, Rk, d_column);
             endAlg = clock();
             break;
         case 3:
             startAlg = clock();
-            Super_Fun_algorythm(C1, id_row + 1, Rk, d_column-1);
+            cout<<"Wykonywanie algorytmu FUN w wersji SUPER Fun..."<<endl;
+            Super_Fun_algorythm(C1, id_row + 1, Rk, d_column);
             endAlg = clock();
             break;
         default:
@@ -63,7 +86,7 @@ int main(int argc, char *argv[]) {
 
     endAll = clock();
     diffAlg = (endAll - startAll) / (double) (CLOCKS_PER_SEC / 1000);
-    cout << "Czas wykonania całego programu" << diffAlg << endl;
+    cout << "Czas wykonania całego programu: " << diffAlg << endl;
 
     save_to_outputfile(Rk, a_type, number_of_transactions, inputFileName, diffFilePrepare, diffAlg, diffAll);
 

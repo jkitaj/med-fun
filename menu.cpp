@@ -1,27 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "string"
 
 using namespace std;
 
-bool Menu(int *d_column, int *d_type, int *a_type, ifstream *input_file, string filename, int *number_of_transaction) {
-    string inputFileName;
-    cout << "Podaj nazwę pliku z danymi:" << endl;
-    cin >> inputFileName;
-    (*input_file).open(inputFileName);
-    if (!input_file->is_open()) {
-        cout << "Nie prawidłowa nazwa pliku (plik nie istnieje) lub wystąpił inny błąd." << endl;
-        cout << "Podaj jeszcze raz nazwę pliku z danymi:" << endl;
-        cin >> inputFileName;
-        (*input_file).open(inputFileName);
-        if (!input_file->is_open()) {
-            cout <<
-            "Nie prawidłowa nazwa pliku (plik nie istnieje) - sprawdź czy plik jest w tym samym folderze co plik wykonywalny programu." <<
-            endl;
-            return false;
-        }
-    }
-
+bool Menu(int *d_column, int *d_type, int *a_type, ifstream *input_file, string &filename, int *number_of_transaction) {
     string firstLine;
     getline(*input_file, firstLine);
     std::istringstream input(firstLine);
@@ -87,9 +71,9 @@ bool Menu(int *d_column, int *d_type, int *a_type, ifstream *input_file, string 
         }
     }
 
-    cout << "Wybrane parametry: plik wejściowy - " << inputFileName << " , numer kolumny z atrybutem decyzyjnym - " <<
-    *d_column << " , rodzaj decyzji - " << *d_type << " , rodzaj algorytmu - " << *a_type <<
-    " , liczba transkacji do wczytania - " << *number_of_transaction << endl;
+//    cout << "Wybrane parametry: numer kolumny z atrybutem decyzyjnym - " <<
+//    *d_column << " , rodzaj decyzji - " << *d_type << " , rodzaj algorytmu - " << *a_type <<
+//    " , liczba transkacji do wczytania - " << *number_of_transaction << endl;
     return true;
 }
 
