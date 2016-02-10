@@ -93,6 +93,7 @@ void FunGen(vector<Candidate *> Ck, int k, vector<Candidate *> &output, vector<i
                             cand_validator.push_back(output.back()->Cand_id.at(n));
                     }
                     for (unsigned int o = 0; o < Ck.size(); o++) {//sprawdzenie czy sprawdzian spelnia warunki
+                        cand_validate=false;
                         if (cand_validator == Ck.at(o)->Cand_id) {//sprawdz czy istnieje podzbior
                             cand_validate = true;
                             if (output.back()->GroupsNo == Ck.at(o)->GroupsNo)//sprawdz czy podzbior ma tyle samo grup
@@ -157,6 +158,7 @@ void StrippedFunGen(vector<Candidate *> Ck, int k, vector<Candidate *> &output, 
                             cand_validator.push_back(output.back()->Cand_id.at(n));
                     }
                     for (unsigned int o = 0; o < Ck.size(); o++) {//sprawdzenie czy sprawdzian spelnia warunki
+                        cand_validate=false;
                         if (cand_validator == Ck.at(o)->Cand_id) {//sprawdz czy istnieje podzbior
                             cand_validate = true;
                             if (output.back()->GroupsNo == Ck.at(o)->GroupsNo)//sprawdz czy podzbior ma tyle samo grup
@@ -202,29 +204,27 @@ void Basic_algorythm(vector<Candidate *> C1, int id_row, vector<Candidate *> &Rk
     vector<Candidate *> tmp;
     tmp = C1;
     for (int k = 1; tmp.size() > 0; k++) {
-        cout << "Weryfikacja kandydatow o dlugosci: " << k << endl;
         for (int z = 0; z < tmp.size(); z++)
             if (Holds(delta, tmp.at(z)->groups)) {
                 Rk.push_back(tmp.at(z));
                 tmp.erase(tmp.begin() + z);
                 z--;
             }
-        cout << "Generowanie kandydatow o dlugosci: " << k + 1 << endl;
         vector<Candidate *> tmp2;
         FunGen(tmp, k, tmp2, T, id_row);
         tmp = tmp2;
 
     }
 
-    cout << "Liczba minimalnych zaleznosci funkcyjnych " << Rk.size() << endl;
-    cout << "Identyfikatory minimalnych zaleznosci funkcyjnych " << endl;
-    for (unsigned int i = 0; i < Rk.size(); i++) {
-        for (unsigned int j = 0; j < Rk.at(i)->Cand_id.size(); j++) {
-            cout << Rk.at(i)->Cand_id.at(j) << " ";
-        }
-        cout << "\t";
-    }
-    cout << endl << "Koniec programu" << endl;
+//    cout << "Liczba minimalnych zaleznosci funkcyjnych " << Rk.size() << endl;
+//    cout << "Identyfikatory minimalnych zaleznosci funkcyjnych " << endl;
+//    for (unsigned int i = 0; i < Rk.size(); i++) {
+//        for (unsigned int j = 0; j < Rk.at(i)->Cand_id.size(); j++) {
+//            cout << Rk.at(i)->Cand_id.at(j) << " ";
+//        }
+//        cout << "\t";
+//    }
+//    cout << endl << "Koniec programu" << endl;
 }
 
 
@@ -258,29 +258,27 @@ void Stripped_algorythm(vector<Candidate *> C1, int id_row, vector<Candidate *> 
     tmp = C1;
 
     for (int k = 1; tmp.size() > 0; k++) {
-        cout << "Weryfikacja kandydatow o dlugosci: " << k << endl;
         for (int z = 0; z < tmp.size(); z++)
             if (StrippedHolds(delta, tmp.at(z)->groups)) {
                 Rk.push_back(tmp.at(z));
                 tmp.erase(tmp.begin() + z);
                 z--;
             }
-        cout << "Generowanie kandydatow o dlugosci: " << k + 1 << endl;
         vector<Candidate *> tmp2;
         StrippedFunGen(tmp, k, tmp2, T, id_row);
         tmp = tmp2;
 
     }
 
-    cout << "Liczba minimalnych zaleznosci funkcyjnych " << Rk.size() << endl;
-    cout << "Identyfikatory minimalnych zaleznosci funkcyjnych " << endl;
-    for (unsigned int i = 0; i < Rk.size(); i++) {
-        for (unsigned int j = 0; j < Rk.at(i)->Cand_id.size(); j++) {
-            cout << Rk.at(i)->Cand_id.at(j) << " ";
-        }
-        cout << "\t";
-    }
-    cout << endl << "Koniec programu" << endl;
+//    cout << "Liczba minimalnych zaleznosci funkcyjnych " << Rk.size() << endl;
+//    cout << "Identyfikatory minimalnych zaleznosci funkcyjnych " << endl;
+//    for (unsigned int i = 0; i < Rk.size(); i++) {
+//        for (unsigned int j = 0; j < Rk.at(i)->Cand_id.size(); j++) {
+//            cout << Rk.at(i)->Cand_id.at(j) << " ";
+//        }
+//        cout << "\t";
+//    }
+//    cout << endl << "Koniec programu" << endl;
 }
 
 bool StrippedHolds(vector<int> T, vector<vector<int *> *> C) {
@@ -350,7 +348,7 @@ void StrippedProduct(vector<vector<int *> *> A, vector<vector<int *> *> B, int B
 }
 
 
-void SuperFunGen(vector<int> delta, vector<Candidate *> Ck, int k, vector<Candidate *> &output, vector<int> T, int N) {
+void SuperFunGenAB(vector<int> delta, vector<Candidate *> Ck, int k, vector<Candidate *> &output, vector<int> T, int N) {
     for (unsigned int i = 0; i < Ck.size(); i++)
         for (unsigned int j = i + 1; j < Ck.size(); j++) {
             bool ok_to_merge = true;
@@ -523,7 +521,7 @@ void DecisionProduct(vector<int> delta, vector<vector<int *> *> A, vector<vector
 }
 
 
-void Super_Fun_algorythm(vector<Candidate *> C1, int id_row, vector<Candidate *> &Rk, int d_column) {
+void Super_Fun_algorythmAB(vector<Candidate *> C1, int id_row, vector<Candidate *> &Rk, int d_column) {
     vector<int> T;
     T.resize(id_row);
     vector<int> delta;
@@ -554,7 +552,6 @@ void Super_Fun_algorythm(vector<Candidate *> C1, int id_row, vector<Candidate *>
     tmp = C1;
 
     for (int k = 1; tmp.size() > 0; k++) {
-        cout << "Weryfikacja kandydatow o dlugosci: " << k << endl;
         if (k == 1) {
             for (int z = 0; z < tmp.size(); z++)
                 if (StrippedHolds(delta, tmp.at(z)->groups)) {
@@ -571,23 +568,21 @@ void Super_Fun_algorythm(vector<Candidate *> C1, int id_row, vector<Candidate *>
                     z--;
                 }
         }
-
-        cout << "Generowanie kandydatow o dlugosci: " << k + 1 << endl;
         vector<Candidate *> tmp2;
-        SuperFunGen(delta, tmp, k, tmp2, T, id_row);
+        SuperFunGenAB(delta, tmp, k, tmp2, T, id_row);
         tmp = tmp2;
 
     }
 
-    cout << "Liczba minimalnych zaleznosci funkcyjnych " << Rk.size() << endl;
-    cout << "Identyfikatory minimalnych zaleznosci funkcyjnych " << endl;
-    for (unsigned int i = 0; i < Rk.size(); i++) {
-        for (unsigned int j = 0; j < Rk.at(i)->Cand_id.size(); j++) {
-            cout << Rk.at(i)->Cand_id.at(j) << " ";
-        }
-        cout << "\t";
-    }
-    cout << endl << "Koniec programu" << endl;
+//    cout << "Liczba minimalnych zaleznosci funkcyjnych " << Rk.size() << endl;
+//    cout << "Identyfikatory minimalnych zaleznosci funkcyjnych " << endl;
+//    for (unsigned int i = 0; i < Rk.size(); i++) {
+//        for (unsigned int j = 0; j < Rk.at(i)->Cand_id.size(); j++) {
+//            cout << Rk.at(i)->Cand_id.at(j) << " ";
+//        }
+//        cout << "\t";
+//    }
+//    cout << endl << "Koniec programu" << endl;
 }
 
 
@@ -615,7 +610,133 @@ bool SuperHolds(vector<vector<int *> *> C) {
     return false;
 }
 
+void SuperFunGenBA(vector<int> delta, vector<Candidate *> Ck, int k, vector<Candidate *> &output, vector<int> T, int N)
+{
+    for(unsigned int i=0;i<Ck.size();i++)
+        for(unsigned int j=i+1;j<Ck.size();j++){
+            bool ok_to_merge=true;
+            for(int l=0;l<k;l++){
+                if(l==k-1){
+                    if(Ck.at(i)->Cand_id.at(l)==Ck.at(j)->Cand_id.at(l)){
+                        ok_to_merge=false;
+                    }
 
+
+                }
+                else if(Ck.at(i)->Cand_id.at(l)!=Ck.at(j)->Cand_id.at(l)){
+                    ok_to_merge=false;
+                    break;
+                }
+
+            }
+            if(ok_to_merge){
+                vector <int> C=Ck.at(i)->Cand_id;
+                C.push_back(Ck.at(j)->Cand_id.at(k-1));
+                Candidate *X,*Y;
+                InitializeParenthood(Ck.at(i),Ck.at(j),X,Y,k);
+
+                bool cand_validate=true;
+                vector <int> cand_validator;
+                Candidate *E;
+                for(unsigned int m=0;m<C.size();m++){//petla do sprawdzania kandydata
+                    cand_validator.clear();
+                    for(unsigned int n=0;n<C.size();n++){//petla do tworzenia sprawdzianow dla kandydata
+                        if(n!=m)
+                            cand_validator.push_back(C.at(n));//utworz id sprawdzianu
+                    }
+                    if((cand_validator==Ck.at(i)->Cand_id)||(cand_validator==Ck.at(j)->Cand_id))//jezeli jest równy ktoremus ojcu
+                        continue;//to przejdz do nastepnego sprawdzianu, m++
+
+                    for(unsigned int o=0;o<Ck.size();o++){//sprawdzenie czy sprawdzian spelnia warunki
+                        cand_validate=false;
+                        if(cand_validator==Ck.at(o)->Cand_id){//sprawdz czy istnieje podzbior
+                            cand_validate=true;
+                            E=Ck.at(o);
+                            break;
+                        }
+                    }
+                    if(cand_validate==false)
+                        break;
+                    else
+                        UpdateParenthood(E,X,Y,k);
+                }
+                if(cand_validate){
+                    Candidate *Cand=new Candidate;
+                    DecisionProduct(delta,Y->groups,X->groups,Cand,T,N);
+                    Cand->Cand_id=C;
+                    if((Cand->RecordsNo!=X->RecordsNo)||(Cand->GroupsNo!=X->GroupsNo)){
+                        output.push_back(Cand);
+                    }
+                    else
+                        delete Cand;
+
+
+                }
+
+
+
+            }
+
+
+        }
+
+}
+
+void Super_Fun_algorythmBA(vector<Candidate *> C1, int id_row, vector<Candidate *> &Rk, int d_column) {
+    vector<int> T;
+    T.resize(id_row);
+    vector<int> delta;
+    delta.resize(id_row);
+    for (unsigned int z = 0; z < C1.size(); z++)//dodaj GroupsNo
+        C1.at(z)->GroupsNo = C1.at(z)->groups.size();
+    for (unsigned int z = 0; z < C1.size(); z++)//dla kazdego atrybutu
+        for (int a = 0; a < C1.at(z)->groups.size(); a++)//przystrzyz grupy
+            if (C1.at(z)->groups.at(a)->size() == 1) {
+                delete C1.at(z)->groups.at(a)->at(0);
+                delete C1.at(z)->groups.at(a);
+                C1.at(z)->groups.erase(C1.at(z)->groups.begin() + a);
+                a--;
+            }
+
+    StrippedPartitionArrayRepresentation(C1.at(d_column - 1)->groups, delta);
+
+    for (unsigned int z = 0;
+         z < C1.at(d_column - 1)->groups.size(); z++) {//atrybut ostatni(decyzja) wszystkie grupy -usuwanie
+        for (unsigned int a = 0; a < C1.at(d_column - 1)->groups.at(z)->size(); a++) {//wszystkie elementy z grupy
+            delete C1.at(d_column - 1)->groups.at(z)->at(a);
+        }
+        delete C1.at(d_column - 1)->groups.at(z);
+    }
+    delete C1.at(d_column - 1);
+    C1.erase(C1.begin() + d_column - 1);
+    vector<Candidate *> tmp;
+    tmp = C1;
+
+    for (int k = 1; tmp.size() > 0; k++) {
+
+        if (k == 1) {
+            for (int z = 0; z < tmp.size(); z++)
+                if (StrippedHolds(delta, tmp.at(z)->groups)) {
+                    Rk.push_back(tmp.at(z));
+                    tmp.erase(tmp.begin() + z);
+                    z--;
+                }
+        }
+        else {
+            for (int z = 0; z < tmp.size(); z++)
+                if (SuperHolds(tmp.at(z)->groups)) {
+                    Rk.push_back(tmp.at(z));
+                    tmp.erase(tmp.begin() + z);
+                    z--;
+                }
+        }
+
+        vector<Candidate *> tmp2;
+        SuperFunGenBA(delta, tmp, k, tmp2, T, id_row);
+        tmp = tmp2;
+
+    }
+}
 
 
 

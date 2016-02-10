@@ -72,8 +72,14 @@ int main(int argc, char *argv[]) {
             break;
         case 3:
             startAlg = clock();
-            cout<<"Wykonywanie algorytmu FUN w wersji SUPER Fun..."<<endl;
-            Super_Fun_algorythm(C1, id_row + 1, Rk, d_column);
+            cout<<"Wykonywanie algorytmu FUN w wersji SUPER FunAB..."<<endl;
+            Super_Fun_algorythmAB(C1, id_row + 1, Rk, d_column);
+            endAlg = clock();
+            break;
+        case 4:
+            startAlg = clock();
+            cout<<"Wykonywanie algorytmu FUN w wersji SUPER FunBA..."<<endl;
+            Super_Fun_algorythmBA(C1,id_row+1,Rk,d_column);
             endAlg = clock();
             break;
         default:

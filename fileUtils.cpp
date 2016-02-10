@@ -169,7 +169,6 @@ int read_from_modified_file(string filename, vector<Candidate *> &C1, int number
             if (!getline(row, s, ',')) break;//wez do przecinka z ss
             column_number_total++;
         }
-        cout << column_number_total << endl;
         dict.resize(column_number_total);
 
         for (int z = 0; z < column_number_total; z++) {
@@ -254,11 +253,12 @@ void save_to_outputfile(vector<Candidate *> Rk, int a_type, int number_of_transa
     filename.append(records);
     filename.append("_");
     switch (a_type) {
-
+        case 4:
+            a_name = "SuperFunBA";
+            break;
         case 3:
-            a_name = "SuperFun";
-            break;//tu bedzie super_fun
-
+            a_name = "SuperFunAB";
+            break;
         case 2:
             a_name = "Stripped";
             break;

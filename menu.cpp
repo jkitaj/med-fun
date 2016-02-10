@@ -45,16 +45,17 @@ bool Menu(int *d_column, int *d_type, int *a_type, ifstream *input_file, string 
         }
     }
 
-    cout << "Wybierz algorytm do wykonania (wybierając jedną z 3 opcji):" << endl;
+    cout << "Wybierz algorytm do wykonania (wybierając jedną z 4 opcji):" << endl;
     cout << "* FUN          :1" << endl;
     cout << "* FUN przystrzyżony      :2" << endl;
-    cout << "* Super FUN  :3" << endl;
-    cout << "Podaj liczbę 1, 2 lub 3:" << endl;
+    cout << "* Super FUN AB  :3" << endl;
+    cout << "* Super FUN BA  :4" << endl;
+    cout << "Podaj liczbę 1, 2, 3 lub 4:" << endl;
     cin >> *a_type;
-    if (*a_type != 1 && *a_type != 2 && *a_type != 3) {
-        cout << "Błędna liczba, podaj liczbę 1, 2 lub 3:" << endl;
+    if (*a_type != 1 && *a_type != 2 && *a_type != 3 && *a_type != 4) {
+        cout << "Błędna liczba, podaj liczbę 1, 2, 3 lub 4:" << endl;
         cin >> *a_type;
-        if (*a_type != 1 && *a_type != 2 && *a_type != 3) {
+        if (*a_type != 1 && *a_type != 2 && *a_type != 3 && *a_type != 4) {
             cout << "Błędna liczba" << endl;
             return false;
         }

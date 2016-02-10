@@ -43,7 +43,8 @@ void DecisionProduct(vector <int> delta,vector <vector <int*>* > A, vector <vect
 bool IsGroupContainedInAnyDecisionClass(vector<int>  S, vector <int> delta);
 void Basic_algorythm(vector <Candidate*> C1,int id_row, vector <Candidate*> &Rk, int d_column);
 void Stripped_algorythm(vector <Candidate*> C1,int id_row, vector <Candidate*> &Rk,int d_column);
-void Super_Fun_algorythm(vector <Candidate*> C1,int id_row, vector <Candidate*> &Rk,int d_column);
+void Super_Fun_algorythmAB(vector <Candidate*> C1,int id_row, vector <Candidate*> &Rk,int d_column);
+void Super_Fun_algorythmBA(vector <Candidate*> C1,int id_row, vector <Candidate*> &Rk,int d_column);
 int CountRecords(Candidate *C);
 
 
