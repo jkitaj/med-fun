@@ -3,13 +3,13 @@
 //
 #include <algorithm>
 #include "fileUtils.h"
-
+using namespace std;
 void create_modified_file(ifstream *input_file, int decision_column, int decision_type, string output_file_name,
                           int number_of_transactions) {
 
-/*    ofstream outfile("output.txt");
-    vector<vector<dictionary> > dict;
-    vector<vector<int>> data;
+    ofstream outfile("output2.txt");
+    vector <vector <dictionary> > dict;
+    vector <vector <int> > data;
     vector<int> row;
     string str;
     int id_row = 0;//ktory wiersz(transakcja) w pliku
@@ -18,6 +18,7 @@ void create_modified_file(ifstream *input_file, int decision_column, int decisio
         istringstream tmp(str);//to samo
         //policz ile kolumn potem przeczytaj
         int column_number_total = 0;
+        data.push_back(row);
         while (line) {
             string s;
             if (!getline(line, s, ',')) break;//wez do przecinka z ss
@@ -25,14 +26,17 @@ void create_modified_file(ifstream *input_file, int decision_column, int decisio
         }
         cout << column_number_total << endl;
         dict.resize(column_number_total);
-
+        int column_number = 0;
         while (tmp) {
             string s;
-            data.push_back(row);
+
             if (!getline(tmp, s, ',')) break;
-            dict.at(0).push_back(dictionary(s, 0));
+            dict.at(column_number).push_back(dictionary(s, 0));
             data.at(0).push_back(id_row);
+            outfile << data.at(0).back()<< " ";
+            column_number++;
         }
+        outfile << "\n";
     }
 
 
@@ -49,11 +53,11 @@ void create_modified_file(ifstream *input_file, int decision_column, int decisio
             if (!getline(ss, s, ',')) break;
             bool is_in_dict = false;
             for (unsigned int z = 0; z < dict.at(column_number).size(); z++) {
-                if (s == dict.at(column_number).at(
-                        z).word) {//jezeli jest juz w slowniku, to dodaj do grupy o id ze slownika element(id_wiersza)
+                if (s == dict.at(column_number).at(z).word) {//jezeli jest juz w slowniku, to dodaj do grupy o id ze slownika element(id_wiersza)
                     is_in_dict = true;
                     data.back().push_back(dict.at(column_number).at(z).id);
-                    //outfile << dict.at(column_number).at(z).id << " ";
+                    //data.at(column_number).push_back(dict.at(column_number).at(z).id);
+                    outfile << dict.at(column_number).at(z).id << " ";
                     break;
                 }
 
@@ -61,15 +65,25 @@ void create_modified_file(ifstream *input_file, int decision_column, int decisio
             if (!is_in_dict) {//dodaj do slownika, dodaj nowa grupe i jej element(id wiersza)
                 int dict_id = dict.at(column_number).size();
                 dict.at(column_number).push_back(dictionary(s, dict_id));
+                //data.at(column_number).push_back(dict.at(column_number).at(dict_id).id);
                 data.back().push_back(dict.at(column_number).at(dict_id).id);
+                outfile << dict.at(column_number).back().id << " ";
                 //outfile << dict.at(column_number).at(dict_id).id << " ";
             }
 
 
             column_number++;
         }
+        outfile << "\n";
         transaction_counter++;
     }
+    for (unsigned int i = 0; i < data.size(); i++) {
+        for (unsigned int j = 0; j < data.at(i).size(); j++) {
+            cout << data.at(i).at(j) << " ";
+        }
+        cout << endl;
+    }
+    cout<<endl;
 
     //komparator - porównuje dwa wektory
     auto cmp = [](vector<int> const &a, vector<int> const &b) {
@@ -92,11 +106,12 @@ void create_modified_file(ifstream *input_file, int decision_column, int decisio
         }
         cout << endl;
     }
+    cout<<endl;
 
 
 
-    //komparator - porównuje dwa wektory
-    auto cmp_decision = [](vector<int> const &a, vector<int> const &b) {
+    //komparator - porównuje dwa wektory czy sa takie same, po za decyzja
+    auto cmp_decision = [=](vector<int> const &a, vector<int> const &b) {
         for (int c = 0; c < a.size(); c++) {
             if (c != decision_column) {
                 if (a.at(c) != b.at(c))
@@ -107,49 +122,98 @@ void create_modified_file(ifstream *input_file, int decision_column, int decisio
     };
 
     vector<pair<int, int>> generalizeDec;
+    int tab[dict.at(decision_column).back().id];
     for (int i = 0; i < data.size(); i++) {
         if (i + 1 < data.size()) {
-            if (!cmp_decision(data.at(i), data.at(i + 1))) {
+            if (cmp_decision(data.at(i), data.at(i + 1))) {
+                cout<<"a"<<endl;
                 switch (decision_type) {
                     case 2:
                         data.at(i).at(decision_column) = dict.at(decision_column).back().id + 1;
                         data.at(i + 1).at(decision_column) = dict.at(decision_column).back().id + 1;
                         break;
                     case 3:
-                        if (generalizeDec.size() == 0)
-                            data.at(i).at(decision_column) = pow(2, dict.at(decision_column).back().id);
-                        else {
-                            int tab[dict.at(decision_column).back().id];
-                            for (int c = 0; c < generalizeDec.size(); c++) {
-                                if (tab[c] == 0)
-                                    tab[c] = 1;
-                            }
-                            int sum = 0;
-                            for (int c = 0; c < generalizeDec.size(); c++) {
-                                if (tab[c] == 1)
-                                    sum += tab[i] * pow(2, c);
-                            }
-                            for (int c = 0; c < generalizeDec.size(); c++) {
-                                data.at(generalizeDec.at(c).first).at(decision_column) = sum;
+                        //if (generalizeDec.size() == 0)
+                        //   data.at(i).at(decision_column) = pow(2, dict.at(decision_column).back().id);
+                        //else {
+                        //int tab[dict.at(decision_column).back().id];
+                        while(cmp_decision(data.at(i), data.at(i + 1))){
+                            generalizeDec.push_back(make_pair(i, data.at(i).at(decision_column)));
+                            generalizeDec.push_back(make_pair(i+1, data.at(i+1).at(decision_column)));
+                            //tab[data.at(i).at(decision_column)]=1;
+                            //tab[data.at(i+1).at(decision_column)]=1;
+                            i++;
+                        }
+                        cout<<generalizeDec.size()<<endl;
+                        for (int c = 0; c < generalizeDec.size(); c++) {
+                            cout<<generalizeDec.at(c).second<<endl;
+                            tab[generalizeDec.at(c).second] = 1;
+                        }
+                        cout<<endl;
+                        cout<<dict.at(decision_column).back().id<<endl;
+                        int sum = 0;
+                        for (int c = 0; c < dict.at(decision_column).back().id+1; c++) {
+                            if (tab[c] == 1){
+                                sum += pow(2, c);//dodaj do sumy
+                                tab[c]=0;//wyzeruj na przyszlosc
+                                cout<<sum<<endl;
                             }
                         }
+                        for (int c = 0; c < generalizeDec.size(); c++) {
+                            data.at(generalizeDec.at(c).first).at(decision_column) = sum;
+                        }
+                        generalizeDec.clear();
+
+                        /*for (int c = 0; c < generalizeDec.size(); c++) {
+                            if (tab[c] == 0)
+                                tab[c] = 1;
+                        }
+                        int sum = 0;
+                        for (int c = 0; c < generalizeDec.size(); c++) {
+                            if (tab[c] == 1)
+                                sum += tab[i] * pow(2, c);
+                        }
+                        for (int c = 0; c < generalizeDec.size(); c++) {
+                            data.at(generalizeDec.at(c).first).at(decision_column) = sum;
+                        }*/
+                        //}
                         break;
-                    case 4:
-                        //TODO
-                        break;
-                    default:
-                        break;
+                        /*case 4:
+                            //TODO
+                            break;
+                        default:
+                            break;*/
                 }
             }
             else if (decision_type == 3) {
-                generalizeDec.push_back(make_pair(i, data.at(i).at(decision_column)));
+                //generalizeDec.push_back(make_pair(i, data.at(i).at(decision_column)));
+                data.at(i).at(decision_column)=pow(2, data.at(i).at(decision_column));
             }
         }
     }
-    outfile.close();*/
+    outfile.close();
+    for (unsigned int i = 0; i < data.size(); i++) {
+        for (unsigned int j = 0; j < data.at(i).size(); j++) {
+            cout << data.at(i).at(j) << " ";
+        }
+        cout << endl;
+    }
+    cout<<endl;
+
 
 
     (*input_file).close();
+    ofstream outfile2("przetworzone.txt");
+    for (unsigned int i = 0; i < data.size(); i++) {
+        for (unsigned int j = 0; j < data.at(i).size(); j++) {
+            if(j!=data.at(i).size()-1)
+                outfile2<< data.at(i).at(j) << ",";
+            else
+                outfile2<< data.at(i).at(j);
+
+        }
+        outfile2<< endl;
+    }
 
 }
 

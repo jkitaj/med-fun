@@ -1,4 +1,3 @@
-//#include <QCoreApplication>
 #include <iostream>
 #include <ctime>
 #include "functions.h"
@@ -23,12 +22,12 @@ int main(int argc, char *argv[]) {
     ifstream inputFile;
     cout << "Podaj nazwę pliku z danymi:" << endl;
     cin >> inputFileName;
-    inputFile.open(inputFileName);
+    inputFile.open(inputFileName.c_str());
     if (!inputFile.is_open()) {
         cout << "Nie prawidłowa nazwa pliku (plik nie istnieje) lub wystąpił inny błąd." << endl;
         cout << "Podaj jeszcze raz nazwę pliku z danymi:" << endl;
         cin >> inputFileName;
-        inputFile.open(inputFileName);
+        inputFile.open(inputFileName.c_str());
         if (!inputFile.is_open()) {
             cout <<
             "Nie prawidłowa nazwa pliku (plik nie istnieje) - sprawdź czy plik jest w tym samym folderze co plik wykonywalny programu." <<
@@ -47,13 +46,15 @@ int main(int argc, char *argv[]) {
 
     startFilePrepare = clock();
     string modifiedFile;
-    create_modified_file(&inputFile, d_column, d_type, modifiedFile, 10);
+    create_modified_file(&inputFile, d_column-1, d_type, modifiedFile, number_of_transactions);
     endFilePrepare = clock();
     diffFilePrepare = (endFilePrepare - startFilePrepare) / (double) (CLOCKS_PER_SEC / 1000);
     cout << "Koniec przetwarzania pliku - czas trwania operacji: " << diffFilePrepare << endl;
 
     vector<Candidate *> C1;//wektor do trzymania kandydatów o dlugosci 1
-    int id_row = read_from_modified_file(inputFileName, C1, number_of_transactions);
+
+    //int id_row = read_from_modified_file(inputFileName, C1, number_of_transactions);
+    int id_row = read_from_modified_file("przetworzone.txt", C1, number_of_transactions);
     cout << "Liczba rekordów: " << id_row + 1 << endl;
     vector<Candidate *> Rk;
 
